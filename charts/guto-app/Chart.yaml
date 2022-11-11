@@ -4,4 +4,4 @@ description: Meu primeiro chart
 type: application
 version: 0.1.0
 appVersion: "1.16.0"
-icon: https://camo.githubusercontent.com/d64a0852473fdca0dd74c7d86167b0c58e53059253c27790dcd54abbc1ba2331/68747470733a2f2f63646e2e6f70656e6272696467652e636f6d2f6173736574732f696d616765732f6f70656e6272696467652d6e67696e782d736d616c6c2e706e67
+icon: images/icon.png
