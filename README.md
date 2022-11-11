@@ -45,3 +45,42 @@
    ```cmd
    helm rollback <RELEASE> [REVISION] [flags]
    ```
+
+## Parametrização do chart
+
+Valores desacoplados no Values.yml são usados nos templates. Exemplo:
+
+- Template deployment.yaml
+```yaml
+ports:
+   - name: http
+      containerPort: {{ .Values.service.targetPort }}
+         protocol: TCP
+         {{- with .Values.livenessProbe }}
+         livenessProbe:
+            {{- toYaml . | nindent 12 }}  
+         {{- end }}
+         {{- with .Values.readinessProbe }}
+         readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}   
+```
+
+- No values.yml:
+
+```yaml
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+```
