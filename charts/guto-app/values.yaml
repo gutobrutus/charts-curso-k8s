@@ -45,11 +45,20 @@ livenessProbe:
   httpGet:
     path: /
     port: http
+  initialDelaySeconds: 5
+  periodSeconds: 5
 
 readinessProbe:
   httpGet:
     path: /
     port: http
+
+secret:
+  name: "app-env-vars"
+  data:
+    MONGO_URI: "mongodb://mongodb.local"
+    USERNAME: "admin"
+    PASSWORD: "pass"
 
 ingress:
   enabled: false
