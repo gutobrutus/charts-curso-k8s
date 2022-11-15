@@ -17,7 +17,9 @@ spec:
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+        {{- if .Values.configMap.enabled }}
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- end }}
       labels:
         {{- include "theia.selectorLabels" . | nindent 8 }}
     spec:
@@ -28,11 +30,13 @@ spec:
       serviceAccountName: {{ include "theia.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.configMap.enabled }}
       volumes:
       - configMap:
           defaultMode: 509
           name: {{ include "theia.fullname" . }}
         name: conf 
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -53,9 +57,11 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if .Values.configMap.enabled }}
           volumeMounts:
           - mountPath: {{ .Values.configMap.path }}
             name: conf
+          {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

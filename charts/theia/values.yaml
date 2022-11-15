@@ -51,6 +51,7 @@ readinessProbe:
     port: http
 
 configMap:
+  enabled: true
   path: /home/project/conf
   data:
     arquivo.conf: |-
