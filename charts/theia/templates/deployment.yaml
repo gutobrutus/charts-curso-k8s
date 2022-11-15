@@ -30,12 +30,19 @@ spec:
       serviceAccountName: {{ include "theia.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      {{- if .Values.configMap.enabled }}
+      {{- if or (eq .Values.configMap.enabled true) (eq .Values.persistence.enabled true) }}
       volumes:
+      {{- end }}
+      {{- if .Values.configMap.enabled }}
       - configMap:
           defaultMode: 509
           name: {{ include "theia.fullname" . }}
         name: conf 
+      {{- end }}
+      {{- if .Values.persistence.enabled }}
+      - name: disco
+        persistentVolumeClaim:
+          claimName: {{ include "theia.fullname" . }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -57,8 +64,14 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- if .Values.configMap.enabled }}
+          {{- if or (eq .Values.configMap.enabled true) (eq .Values.persistence.enabled true) }}
           volumeMounts:
+          {{- end }}
+          {{- if .Values.persistence.enabled }}
+          - mountPath: {{ .Values.persistence.path }}
+            name: disco
+          {{- end }}
+          {{- if .Values.configMap.enabled }}
           - mountPath: {{ .Values.configMap.path }}
             name: conf
           {{- end }}
